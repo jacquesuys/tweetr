@@ -6,7 +6,7 @@ export const parseUsers = (file, limit = 72, delimiter = '\n') => {
   if (fs.existsSync(file)) {
     if (extGuard(file)) {
       if (sizeGuard(file, limit)) {
-        let data = fs.readFileSync(file, 'utf8', (err, data) => data);
+        const data = fs.readFileSync(file, 'utf8', (err, data) => data);
 
         // TODO: add regex test for each row
         // TODO: return failures

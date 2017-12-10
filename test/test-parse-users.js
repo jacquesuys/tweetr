@@ -1,7 +1,3 @@
-// Test file contents
-
-// Test positive scenario
-
 import fs from 'fs';
 import path from 'path';
 import { assert, expect } from 'chai';
@@ -25,13 +21,13 @@ describe('The integrity of the users file', () => {
     size = createFile(fileName, rows);
   });
 
-  it('Should be return error if file doesn\'t exist', () => {
+  it('Should return error if file doesn\'t exist', () => {
     const result = parseUsers(wrongFile);
     expect(result).to.equal('File doesn\'t exist');
     deleteFile(wrongFile);
   });
 
-  it('Should be return error if file extension is incorrect', () => {
+  it('Should return error if file extension is incorrect', () => {
     createFile(wrongFile, rows);
 
     const result = parseUsers(wrongFile);

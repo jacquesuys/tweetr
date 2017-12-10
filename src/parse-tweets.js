@@ -1,13 +1,29 @@
-// Receive a file to read
+import fs from 'fs';
+import { sizeGuard, extGuard } from '../src/file-guard';
 
-// Does the file exist
+export const parseTweets = (file, limit = 1000, delimiter = '\n') => {
+  if (fs.existsSync(file)) {
+    if (extGuard(file)) {
+      if (sizeGuard(file, limit)) {
 
-// Is the file the correct extension
+        const data = fs.readFileSync(file, 'utf8', (err, data) => data);
 
-// Test the contents of the file
+        // TODO: add regex test for each row
+        // TODO: return failures
 
-// if name is not present in users list do not print
+        const result = data.split(delimiter)
+          // filter out any empty strings, from delimiters
+          .filter(str => str.length)
+          .map(row => row.split('> '));
 
-// if the user doesnt follow, dont print follower response
-
-// Return the data
+        return result;
+      } else {
+        return "File exceeds the limit";
+      }
+    } else {
+      return "Must be a .txt file";
+    }
+  } else {
+    return "File doesn\'t exist";
+  }
+}
