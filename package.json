@@ -1,0 +1,11 @@
+{
+  "name": "tweeter",
+  "version": "1.0.0",
+  "description": "A tweet generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Jacques Uys",
+  "license": "ISC"
+}
