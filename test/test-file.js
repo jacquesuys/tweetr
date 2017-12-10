@@ -1,29 +1,33 @@
 import fs from 'fs';
 import path from 'path';
 import { expect } from 'chai';
-import { createFile, deleteFile } from './test-helper';
+import { createFile, deleteFile, makePath } from './test-helper';
 import { sizeGuard, extGuard } from '../src/file-guard';
 
 describe('The integrity of the files', () => {
-  const fileName = path.resolve(__dirname, 'test.txt');
+  let fileName, size;
   const rows = "My first rowzzs\nSecond frow\n";
 
+  beforeEach(() => {
+    fileName = makePath('users.txt');
+    size = createFile(fileName, rows);
+  });
+
   it('Should be return true if UNDER the specified size', () => {
-    const size = createFile(fileName, rows);
     const result = sizeGuard(fileName, size);
     expect(result).to.equal(true);
   });
 
   it('Should be return false if OVER the specified size', () => {
-    const size = createFile(fileName, rows);
     const result = sizeGuard(fileName, size - 1);
     expect(result).to.equal(false);
   });
 
   it('Should be return false if NOT a TXT file', () => {
-    const wrongFile = path.resolve(__dirname, 'test.html');
+    const wrongFile = makePath('test.html');
     const result = extGuard(wrongFile);
     expect(result).to.equal(false);
+    deleteFile(wrongFile);
   });
 
   it('Should be return true if a TXT file', () => {

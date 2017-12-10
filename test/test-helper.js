@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 const createFile = (filePath, content) => {
   const stream = fs.createWriteStream(filePath);
@@ -16,4 +17,6 @@ const deleteFile = filePath => {
   if (fs.existsSync(filePath)) fs.unlink(filePath);
 }
 
-export { createFile, deleteFile };
+const makePath = fileName => path.resolve(__dirname, fileName);
+
+export { createFile, deleteFile, makePath };
