@@ -4,7 +4,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 import { createFile, deleteFile, makePath } from './test-helper';
 import { parseUsers } from '../src/parse-users';
 
@@ -14,6 +14,8 @@ describe('The integrity of the users file', () => {
     'Alan follows Martin\n',
     'Ward follows Martin, Alan'
   ].join('');
+
+  const badSet = 'Ward follows Martin, Alan, Martin';
 
   let fileName, wrongFile, size;
 
@@ -37,19 +39,8 @@ describe('The integrity of the users file', () => {
     deleteFile(wrongFile);
   });
 
-  // xit('Should be return true if a TXT file', () => {
-  //   const result = extGuard(fileName);
-  //   expect(result).to.equal(true);
-  // });
-
-  it('Should be return an array if the file is valid', () => {
-    const result = parseUsers(fileName);
-    expect(result).to.be.an('array');
-  });
-
   it('Should filter away any empty delimiters', () => {
     const rows = [
-      'Ward follows Alan\n',
       'Alan follows Martin\n',
       'Ward follows Martin, Alan\n'
     ].join('');
@@ -57,17 +48,24 @@ describe('The integrity of the users file', () => {
     createFile(fileName, rows);
 
     const result = parseUsers(fileName);
-    expect(result.length).to.equal(3);
+    expect(Object.keys(result).length).to.equal(2);
   });
 
-  it('Should be return an error when OVER the limit', () => {
+  it('Should return an error when OVER the size limit', () => {
     const result = parseUsers(fileName, size - 1);
     expect(result).to.equal('File exceeds the limit');
   });
 
-  it('Should be return an array with contents', () => {
+  it('Should return an object with names and followers', () => {
     const result = parseUsers(fileName);
-    expect(result).to.be.an('array');
+    expect(result).to.be.an('object');
+  });
+
+  it('Should have followers as a unique Set', () => {
+    createFile(fileName, badSet);
+    const result = parseUsers(fileName);
+    expect(result['Ward']).to.have.all.keys('Martin', 'Alan');
+    assert.deepEqual(result['Ward'], new Set(['Martin', 'Alan', 'Martin']))
   });
 
   afterEach(() => {
