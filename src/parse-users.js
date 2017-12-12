@@ -1,19 +1,23 @@
 import fs from 'fs';
 import { sizeGuard, extGuard } from '../src/file-guard';
+import msg from './messages';
 
-export const parseUsers = (file, limit = 72, delimiter = '\n') => {
-  // ^ TODO: maybe destructure above params
+export const parseUsers = (file, limit = 1000, delimiter = '\n') => {
   if (fs.existsSync(file)) {
     if (extGuard(file)) {
       if (sizeGuard(file, limit)) {
-        const data = fs.readFileSync(file, 'utf8', (err, data) => data);
+        let data = fs.readFileSync(file, 'utf8', (err, data) => data);
 
-        // TODO: add regex test for each row
-        // TODO: return failures
-        
-        const result = data.split(delimiter)
+        data = data.split('\n')
           // filter out any empty strings, from delimiters
-          .filter(str => str.length)
+          .filter(str => str.length);
+
+        const regx = /\w+\sfollows\s\w+(,\s\w+)?/;
+        const sequence = data.map(a => regx.test(a)).every(e => e);
+
+        if (!sequence) return msg.structure_u;
+
+        const result = data
           .map(row => {
             return row.split(' ')
               .filter(word => word !== 'follows')
@@ -27,12 +31,12 @@ export const parseUsers = (file, limit = 72, delimiter = '\n') => {
 
         return result;
       } else {
-        return "File exceeds the limit";
+        return msg.limit;
       }
     } else {
-      return "Must be a .txt file";
+      return msg.type;
     }
   } else {
-    return "File doesn\'t exist";
+    return msg.exist;
   }
 }

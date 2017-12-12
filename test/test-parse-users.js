@@ -3,6 +3,7 @@ import path from 'path';
 import { assert, expect } from 'chai';
 import { createFile, deleteFile, makePath } from './test-helper';
 import { parseUsers } from '../src/parse-users';
+import msg from '../src/messages';
 
 describe('The integrity of the users file', () => {
   const rows = [
@@ -23,7 +24,7 @@ describe('The integrity of the users file', () => {
 
   it('Should return error if file doesn\'t exist', () => {
     const result = parseUsers(wrongFile);
-    expect(result).to.equal('File doesn\'t exist');
+    expect(result).to.equal(msg.exist);
     deleteFile(wrongFile);
   });
 
@@ -31,7 +32,7 @@ describe('The integrity of the users file', () => {
     createFile(wrongFile, rows);
 
     const result = parseUsers(wrongFile);
-    expect(result).to.equal('Must be a .txt file');
+    expect(result).to.equal(msg.type);
     deleteFile(wrongFile);
   });
 
@@ -49,12 +50,7 @@ describe('The integrity of the users file', () => {
 
   it('Should return an error when OVER the size limit', () => {
     const result = parseUsers(fileName, size - 1);
-    expect(result).to.equal('File exceeds the limit');
-  });
-
-  it('Should return an object with names and followers', () => {
-    const result = parseUsers(fileName);
-    expect(result).to.be.an('object');
+    expect(result).to.equal(msg.limit);
   });
 
   it('Should have followers as a unique Set', () => {

@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 
 const createFile = (filePath, content) => {
-  const stream = fs.createWriteStream(filePath);
   let size = 0;
   
   if (content) {
@@ -14,7 +13,7 @@ const createFile = (filePath, content) => {
 }
 
 const deleteFile = filePath => {
-  if (fs.existsSync(filePath)) fs.unlink(filePath);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 }
 
 const makePath = fileName => path.resolve(__dirname, fileName);

@@ -13,24 +13,24 @@ describe('The integrity of the files', () => {
     size = createFile(fileName, rows);
   });
 
-  it('Should be return true if UNDER the specified size', () => {
+  it('Should return true if UNDER the specified size', () => {
     const result = sizeGuard(fileName, size);
     expect(result).to.equal(true);
   });
 
-  it('Should be return false if OVER the specified size', () => {
+  it('Should return false if OVER the specified size', () => {
     const result = sizeGuard(fileName, size - 1);
     expect(result).to.equal(false);
   });
 
-  it('Should be return false if NOT a TXT file', () => {
+  it('Should return false if NOT a TXT file', () => {
     const wrongFile = makePath('test.html');
     const result = extGuard(wrongFile);
     expect(result).to.equal(false);
     deleteFile(wrongFile);
   });
 
-  it('Should be return true if a TXT file', () => {
+  it('Should return true if a TXT file', () => {
     const result = extGuard(fileName);
     expect(result).to.equal(true);
   });

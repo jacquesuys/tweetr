@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const sizeGuard = (file, limit = 72) => {
+const sizeGuard = (file, limit = 1000) => {
   const fileSize = fs.statSync(file).size; // file size in bytes
   return fileSize <= limit; 
 }
